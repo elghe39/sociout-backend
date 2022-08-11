@@ -61,7 +61,11 @@ const userSchema = new Schema({
     notification: [{
         type: Schema.Types.ObjectId,
         ref: "Notification"
-    }]
+    }],
+    resetCode: {
+        type: Schema.Types.ObjectId,
+        ref: "ResetCode"
+    }
 }, {timestamps: true})
 
     userSchema.methods.validatePassword = function(password) {

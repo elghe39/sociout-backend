@@ -33,9 +33,9 @@ export function verifyToken(token) {
         algorithms: ['RS256'],
     }
 
-    return jwt.verify(token, publicKey, verifyOptions, (err, decoded) => { 
-        if (err) {
-            return err
+    return jwt.verify(token, publicKey, verifyOptions, (error, decoded) => { 
+        if (error) {
+            throw error
         }
 
         return decoded

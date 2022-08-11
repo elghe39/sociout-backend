@@ -9,16 +9,16 @@ export async function authorize(req, res, next) {
         }
 
         const token = jwt.replace('Bearer ','')
-        
+
         const decodedToken = verifyToken(token)
-        
-        req.body.id = decodedToken.id
+
+        req.body.userId = decodedToken.id
         next();
     } catch (error) {
         if (error.name === 'TokenExpiredError') {
-            return res.status(401).json({ message: 'Expired token' })
+            return res.status(401).send({ message: 'Expired token' })
         }
 
-        res.status(500).json({ message: 'Failed to authenticate user' })
+        res.status(500).send({ message: 'Failed to authenticate user' })
     }   
 }

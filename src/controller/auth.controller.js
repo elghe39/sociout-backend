@@ -7,7 +7,7 @@ export async function loginHandler(req, res) {
         
         const token = createToken(user)
 
-        return res.status(200).send({
+        return res.cookie("token", token).send({
             success: true,
             message: "Login successfully",
             token: token
@@ -18,4 +18,11 @@ export async function loginHandler(req, res) {
             message: error.message
         })
     }
+}
+
+export async function deleteCookieHandler(req, res) {
+    return res.clearCookie().send({
+        success: true,
+        message: "Logout successfull"
+    })
 }
