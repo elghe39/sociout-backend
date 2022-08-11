@@ -8,7 +8,7 @@ import router from './routes/index.js'
 const app = express()
 
 app.use(bodyParser.json())
-app.use(cookieParser)
+app.use(cookieParser())
 app.use(router)
 
 const PORT = process.env.PORT
