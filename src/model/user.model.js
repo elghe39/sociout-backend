@@ -32,11 +32,9 @@ const userSchema = new Schema({
     gender: {
         type: String,
         enum: ["Male", "Female"],
-        required: true
     },
     dayOfBirth: {
         type: Date,
-        required: [true, "Day of Birth can't be blank"]
     },
     sumary: {
         type: String,

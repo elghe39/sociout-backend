@@ -12,11 +12,6 @@ export const createUserSchema = joi.object({
         .required(),
     lastName: joi.string()
         .required(),
-    gender: joi.string()
-        .required(),
-    dayOfBirth: joi.date()
-        .max(Date())
-        .required(),
     password: joiPassword.string()
         .min(8)
         .required()
