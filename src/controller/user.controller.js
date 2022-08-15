@@ -36,9 +36,6 @@ export async function getMeHandler(req, res) {
     const userId = req.body.userId
     try{
         const user = await findUserById(userId)
-        if(!user) {
-            throw new Error('User does not exist')
-        }
 
         return res.status(200).send({
             success: true,
@@ -63,9 +60,6 @@ export async function getProfileHandler(req, res) {
     const userId = req.params.userId
     try{
         const user = await findUserById(userId)
-        if(!user) {
-            throw new Error('User does not exist')
-        }
 
         return res.status(200).send({
             success: true,

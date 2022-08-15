@@ -6,18 +6,28 @@ import transporter from '../utils/sendEmail.js'
 
 const nanoid = customAlphabet('1234567890', 6)
 
-export function findUserByEmail(email) {
-    return userModel.findOne({email: email})
+export async function findUserByEmail(email) {
+    const user = await userModel.findOne({email: email})
+    if (!user) {
+        throw new Error('User does not exist')
+    }
+
+    return user
 }
 
-export function findUserById(userId) {
-    return userModel.findById(userId)
+export async function findUserById(userId) {
+    const user = await userModel.findById(userId)
+    if (!user) {
+        throw new Error('User does not exist')
+    }
+
+    return user
 }
 
 export async function createUser(input) {
     const { email, firstName, lastName, password } = input
 
-    const existUser = await findUserByEmail(email)
+    const existUser = await userModel.findOne({ email: email })
     if(existUser) {
         throw new Error('Email is already taken')
     }
@@ -65,9 +75,6 @@ export async function createResetCode(email) {
     const code = nanoid()
 
     const user = await findUserByEmail(email)
-    if (!user) {
-        throw new Error('Account does not exist')
-    }
 
     if (user.resetCode) {
         await resetCodeModel.findByIdAndDelete(user.resetCode)

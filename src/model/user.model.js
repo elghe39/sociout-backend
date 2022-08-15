@@ -52,6 +52,10 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "Follow"
     }],
+    followedList: [{
+        type: Schema.Types.ObjectId,
+        ref: "Follow"
+    }],
     requestFriendList: [{
         type: Schema.Types.ObjectId,
         ref: "FriendRequest"
@@ -63,6 +67,12 @@ const userSchema = new Schema({
     resetCode: {
         type: Schema.Types.ObjectId,
         ref: "ResetCode"
+    },
+    cover: {
+        type: String
+    },
+    place: {
+        type: String
     }
 }, {timestamps: true})
 
