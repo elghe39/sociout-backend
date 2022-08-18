@@ -1,9 +1,10 @@
-import { addRequest, declineRequest, deleteRequest, getRequest } from '../service/friendRequest.service.js'
+import { addRequest, declineRequest, deleteRequest, existRequest, getRequest } from '../service/friendRequest.service.js'
 
 export async function addRequestHandler(req, res) {
     const sendId = req.body.userId
     const receiveId = req.params.userId
     try {
+        await existRequest(sendId, receiveId)
         await addRequest(sendId, receiveId)
 
         return res.status(200).send({

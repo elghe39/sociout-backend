@@ -24,13 +24,15 @@ export async function findUserById(userId) {
     return user
 }
 
-export async function createUser(input) {
-    const { email, firstName, lastName, password } = input
-
+export async function checkEmail(email) {
     const existUser = await userModel.findOne({ email: email })
     if(existUser) {
         throw new Error('Email is already taken')
     }
+}
+
+export async function createUser(input) {
+    const { email, firstName, lastName, password } = input
 
     const newUser = new userModel({ email, firstName, lastName })
 
@@ -40,12 +42,16 @@ export async function createUser(input) {
     await newUser.save()
 }
 
-export async function changePassword(input) {
-    const { userId, old_password, password } = input
+export async function checkOldPassword(userId, password) {
     const user = await findUserById(userId)
-    if(!user.validatePassword(old_password)) {
+    if(!user.validatePassword(password)) {
         throw new Error('Old password is incorrect')
     }
+}
+
+export async function changePassword(input) {
+    const { userId, password } = input
+    const user = await findUserById(userId)
 
     user.hash = crypto.pbkdf2Sync(password, user.salt, 10000,  512, 'sha512').toString('hex')
     await user.save()

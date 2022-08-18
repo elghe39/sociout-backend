@@ -1,4 +1,4 @@
-import { addFriend, deleteFriend } from "../service/friend.service.js"
+import { addFriend, deleteFriend, getFriendList } from "../service/friend.service.js"
 import { findRequest } from "../service/friendRequest.service.js"
 
 export async function addFriendHandler(req, res) {
@@ -35,6 +35,24 @@ export async function deleteFriendHandler(req, res) {
         return res.status(404).send({
             success: false,
             message: error.message
+        })
+    }
+}
+
+export async function getFriendListHandler(req, res) {
+    const userId = req.body.userId
+    try {
+        const friendList = await getFriendList(userId)
+
+        return res.status(200).send({
+            success: true,
+            message: 'Get friend list successfuly',
+            friendList: friendList
+        })
+    } catch (error) {
+        return res.status(404).send({
+            success: false,
+            message: error.mesasge
         })
     }
 }

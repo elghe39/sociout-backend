@@ -19,25 +19,18 @@ export const createUserSchema = joi.object({
         .minOfUppercase(1)
         .minOfNumeric(1)
         .noWhiteSpaces(),
-    password_confirm: joi.ref('password')
 })
 
 export const changePasswordSchema = joi.object({
     old_password: joiPassword.string()
-        .min(8)
-        .required()
-        .minOfLowercase(1)
-        .minOfUppercase(1)
-        .minOfNumeric(1)
-        .noWhiteSpaces(),
+        .required(),
     password: joiPassword.string()
         .min(8)
         .required()
         .minOfLowercase(1)
         .minOfUppercase(1)
         .minOfNumeric(1)
-        .noWhiteSpaces(),
-    password_confirm: joi.ref('password')
+        .noWhiteSpaces()
 })
 
 export const changeAvatarSchema = joi.object({
@@ -65,15 +58,12 @@ export const resetPasswordSchema = joi.object({
         .required()
         .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
     resetCode: joi.string()
-        .required()
-        .min(6)
-        .max(6),
+        .required(),
     password: joiPassword.string()
         .min(8)
         .required()
         .minOfLowercase(1)
         .minOfUppercase(1)
         .minOfNumeric(1)
-        .noWhiteSpaces(),
-    password_confirm: joi.ref('password')
+        .noWhiteSpaces()
 })

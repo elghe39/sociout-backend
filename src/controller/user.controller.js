@@ -1,7 +1,9 @@
-import { findUserByEmail, findUserById, createUser, changePassword, changeAvatar, changeProfile, createResetCode, sendResetCode, resetPassword} from '../service/user.service.js'
+import { findUserById, createUser, changePassword, changeAvatar, changeProfile, createResetCode, sendResetCode, resetPassword, checkEmail, checkOldPassword, findUserByEmail} from '../service/user.service.js'
 
 export async function createUserHandler(req, res) {
+    const { email } = req.body
     try {
+        await checkEmail(email)
         await createUser(req.body)
         
         return res.status(200).send({
@@ -17,7 +19,9 @@ export async function createUserHandler(req, res) {
 }
 
 export async function changePasswordHandler(req, res) {
+    const { userId, old_password } = req.body
     try {
+        await checkOldPassword(userId, old_password)
         await changePassword(req.body)
 
         return res.status(200).send({
@@ -122,6 +126,8 @@ export async function changeProfileHandler(req, res) {
 export async function forgetPasswordHandler(req, res) {
     const { email } = req.body
     try {
+        await findUserByEmail(email)
+
         const resetCode = await createResetCode(email)
 
         sendResetCode(email, resetCode)

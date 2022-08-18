@@ -20,13 +20,12 @@ export async function addFriend(sendId, receiveId) {
         firstUserId: sendId,
         secondUserId: receiveId
     })
-    await friend.save()
-
-    await declineRequest(sendId, receiveId)
 
     sendUser.friendList.push(friend)
     receiveUser.friendList.push(friend)
 
+    await declineRequest(sendId, receiveId)
+    await friend.save()
     await sendUser.save()
     await receiveUser.save()
 }
@@ -49,4 +48,16 @@ export async function deleteFriend(sendId, receiveId) {
 
     await deleteFriendList(sendId, friend._id)
     await deleteFriendList(receiveId, friend._id)
+}
+
+export async function getFriendList(userId) {
+    let list = []
+    
+    let friendList = await friendModel.find({ firstUserId: userId })
+    friendList.forEach(({ secondUserId }) => list.push(secondUserId))
+
+    friendList = await friendModel.find({ secondUserId: userId })
+    friendList.forEach(({ firstUserId }) => list.push(firstUserId))
+
+    return list
 }

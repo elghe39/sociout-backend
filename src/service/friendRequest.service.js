@@ -15,9 +15,9 @@ export async function findRequest(sendId, receiveId) {
 
 export async function deleteRequest(sendId, receiveId) {
     const request = await findRequest(sendId, receiveId)
-    request.delete()
-
     const receiveUser = await findUserById(receiveId)
+
+    request.delete()
 
     const index = receiveUser.requestFriendList.findIndex((id) => id === request._id)
     receiveUser.requestFriendList.splice(index, 1)
@@ -27,17 +27,16 @@ export async function deleteRequest(sendId, receiveId) {
 
 export async function declineRequest(sendId, receiveId) {
     const request = await findRequest(receiveId, sendId)
-    request.delete()
-
     const sendUser = await findUserById(sendId)
+
+    request.delete()
 
     const index = sendUser.requestFriendList.findIndex((id) => id === request._id)
     sendUser.requestFriendList.splice(index, 1)
 
     await sendUser.save()
 }
-
-export async function addRequest(sendId, receiveId) {
+export async function existRequest(sendId, receiveId) {
     const existRequest = await friendRequestModel.findOne({
         sendId: sendId,
         receiveId: receiveId
@@ -45,7 +44,9 @@ export async function addRequest(sendId, receiveId) {
     if (existRequest) {
         throw new Error('Friend request already exists')
     }
+}
 
+export async function addRequest(sendId, receiveId) {    
     const receiveUser = await findUserById(receiveId)
 
     const request = new friendRequestModel({
