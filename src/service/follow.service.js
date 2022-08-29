@@ -1,3 +1,4 @@
+import { validateUserId } from '../middleware/validate.middleware.js'
 import followModel from './../model/follow.model.js'
 import { findUserById } from './user.service.js'
 
@@ -22,6 +23,28 @@ export async function existFollow(sendId, receiveId) {
     }
 }
 
+function addFollowingList(sendUser, receiveUser) {
+    receiveUser.followingList.push({
+        userId: sendUser._id,
+        firstName: sendUser.firstName,
+        lastName: sendUser.lastName,
+        avatar: sendUser.avatar
+    })
+
+    receiveUser.save()
+}
+
+function addFollowedList(sendUser, receiveUser) {
+    sendUser.followedList.push({
+        userId: receiveUser._id,
+        firstName: receiveUser.firstName,
+        lastName: receiveUser.lastName,
+        avatar: receiveUser.avatar
+    })
+
+    sendUser.save()
+}
+
 export async function addFollow(sendId, receiveId) {
     const sendUser = await findUserById(sendId)
     const receiveUser = await findUserById(receiveId)
@@ -31,52 +54,43 @@ export async function addFollow(sendId, receiveId) {
         receiveId: receiveId
     })
 
-    receiveUser.followList.push(follow)
-    sendUser.followedList.push(follow)
+    addFollowingList(sendUser, receiveUser)
+    addFollowedList(sendUser, receiveUser)
 
     await follow.save()
-    await receiveUser.save()
-    await sendUser.save()
 }
 
-export async function deleteFollowList(userId, followId) {
-    const user = await findUserById(userId)
+export async function deleteFollowingList(receiveId, sendId) {
+    const user = await findUserById(receiveId)
 
-    const index = user.followList.findIndex((id) => id === followId)
-    user.followList.splice(index, 1)
+    user.followingList.filter(({ userId }) => userId === sendId)
 
     user.save()
 }
 
-export async function deleteFollowedList(userId, followId) {
-    const user = await findUserById(userId)
+export async function deleteFollowedList(sendId, receiveId) {
+    const user = await findUserById(sendId)
 
-    const index = user.followedList.findIndex((id) => id === followId)
-    user.followedList.splice(index, 1)
+    user.followedList.filter(({ userId }) => userId === receiveId)
 
     user.save()
 }
 
 export async function deleteFollow(follow, sendId, receiveId) {
-    await deleteFollowedList(sendId, follow._id)
-    await deleteFollowList(receiveId, follow._id)
+    await deleteFollowedList(sendId, receiveId)
+    await deleteFollowingList(receiveId, sendId)
+
     await follow.delete()
 }
 
-export async function getFollowList(userId) {
-    const followList = await followModel.find({ receiveId: userId }) 
-    let list = []
+export async function getFollowingList(userId) {
+    const user = await findUserById(userId)
 
-    followList.forEach(({ sendId }) => list.push(sendId))
-
-    return list
+    return user.followingList
 }
 
 export async function getFollowedList(userId) {
-    const followedList = await followModel.find({ sendId: userId }) 
-    let list = []
+    const user = await findUserById(validateUserId)
 
-    followedList.forEach(({ receiveId }) => list.push(receiveId))
-
-    return list
+    return user.followedList
 }

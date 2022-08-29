@@ -1,8 +1,8 @@
-import { addFollow, deleteFollow, existFollow, findFollow, getFollowedList, getFollowList } from "../service/follow.service.js"
+import { addFollow, deleteFollow, existFollow, findFollow, getFollowedList, getFollowingList } from "../service/follow.service.js"
 
 export async function addFollowHandler(req, res) {
-    const sendId = req.body.userId
-    const receiveId = req.params.userId
+    const sendId = req.body.sendId
+    const receiveId = req.body.userId
     try {
         await existFollow(sendId, receiveId)
         await addFollow(sendId, receiveId)
@@ -20,8 +20,8 @@ export async function addFollowHandler(req, res) {
 }
 
 export async function deleteFollowHandler(req, res) {
-    const sendId = req.body.userId
-    const receiveId = req.params.userId
+    const sendId = req.body.sendId
+    const receiveId = req.body.userId
     try {
         const follow = await findFollow(sendId, receiveId)
 
@@ -40,9 +40,9 @@ export async function deleteFollowHandler(req, res) {
 }
 
 export async function getFollowListHandler(req, res) {
-    const userId = req.body.userId
+    const userId = req.body.sendId
     try {
-        const list = await getFollowList(userId)
+        const list = await getFollowingList(userId)
 
         return res.status(200).send({
             success: true,
@@ -58,7 +58,7 @@ export async function getFollowListHandler(req, res) {
 }
 
 export async function getFollowedListHandler(req, res) {
-    const userId = req.body.userId
+    const userId = req.body.sendId
     try {
         const list = await getFollowedList(userId)
 
@@ -75,10 +75,10 @@ export async function getFollowedListHandler(req, res) {
     }
 }
 
-export async function getUserFollowListHandler(req, res) {
-    const userId = req.params.userId
+export async function getFollowingListHandler(req, res) {
+    const userId = req.body.userId
     try {
-        const list = await getFollowList(userId)
+        const list = await getFollowingList(userId)
 
         return res.status(200).send({
             success: true,
