@@ -12,7 +12,7 @@ export async function authorize(req, res, next) {
 
         const decodedToken = verifyToken(token)
 
-        req.body.userId = decodedToken.id
+        req.body.sendId = decodedToken.id
         next();
     } catch (error) {
         if (error.name === 'TokenExpiredError') {

@@ -3,51 +3,70 @@ import friendModel from './../model/friend.model.js'
 import { declineRequest } from "./friendRequest.service.js"
 
 export function findFriend(sendId, receiveId) {
-    return friendModel.findOne({$or:[{
+    const friend = friendModel.findOne({$or:[{
         firstUserId: sendId,
         secondUserId: receiveId
     }, {
         firstUserId: receiveId,
         secondUserId: sendId
     }]})
+    if (!friend) {
+        throw new Error('Not friend')
+    }
+    return friend
+}
+
+export function existFriend(sendId, receiveId) {
+    const friend = friendModel.findOne({$or:[{
+        firstUserId: sendId,
+        secondUserId: receiveId
+    }, {
+        firstUserId: receiveId,
+        secondUserId: sendId
+    }]})
+    if (friend) {
+        throw new Error('Friend have already exist')
+    }
+}
+
+function addFriendList(user, friend) {
+    user.friendList.push({
+        userId: friend._id,
+        firstName: friend.firstName,
+        lastName: friend.lastName,
+        avatar: friend.avatar,
+    })
 }
 
 export async function addFriend(sendId, receiveId) {
     const sendUser = await findUserById(sendId)
     const receiveUser = await findUserById(receiveId)
 
-    const friend = new friendModel({
+    await friend.create({
         firstUserId: sendId,
         secondUserId: receiveId
     })
 
-    sendUser.friendList.push(friend)
-    receiveUser.friendList.push(friend)
+    addFriendList(sendUser, receiveUser)
+    addFriendList(receiveUser, sendUser)
 
     await declineRequest(sendId, receiveId)
-    await friend.save()
     await sendUser.save()
     await receiveUser.save()
 }
 
 export async function deleteFriendList(userId, friendId) {
     const user = await findUserById(userId)
-
-    const index = user.friendList.findIndex((id) => id === friendId)
-    user.friendList.splice(index, 1)
-
+    
+    user.friendList.filter(({ userId }) => userId != friendId)
     user.save()
 }
 
 export async function deleteFriend(sendId, receiveId) {
-    const friend = await findFriend(sendId, receiveId)
-    if (!friend) {
-        throw new Error('Not friend')
-    }
-    friend.delete()
+    await deleteFriendList(friend.firstUserId, friend.secondUserId)
+    await deleteFriendList(friend.secondUserId, friend.firstUserId)
 
-    await deleteFriendList(sendId, friend._id)
-    await deleteFriendList(receiveId, friend._id)
+    friend.delete()
 }
 
 export async function getFriendList(userId) {

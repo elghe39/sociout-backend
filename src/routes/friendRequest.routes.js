@@ -7,8 +7,8 @@ const router = express.Router()
 
 router.use(authorize)
 router.get("/friend-request", getRequestHandler)
-router.post("/friend-request/:userId", validateUserId, addRequestHandler)
-router.delete("/friend-request/delete/:userId", validateUserId, deleteRequestHandler)
-router.delete("/friend-request/decline/:userId", validateUserId, declineRequestHandler)
+router.post("/friend-request", validateUserId, addRequestHandler)
+router.delete("/friend-request/delete", validateUserId, deleteRequestHandler)
+router.delete("/friend-request/decline", validateUserId, declineRequestHandler)
 
 export default router

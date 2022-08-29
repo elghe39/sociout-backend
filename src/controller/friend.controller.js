@@ -1,10 +1,11 @@
-import { addFriend, deleteFriend, getFriendList } from "../service/friend.service.js"
+import { addFriend, deleteFriend, existFriend, findFriend, getFriendList } from "../service/friend.service.js"
 import { findRequest } from "../service/friendRequest.service.js"
 
 export async function addFriendHandler(req, res) {
-    const sendId = req.body.userId
-    const receiveId = req.params.userId
+    const sendId = req.body.sendId
+    const receiveId = req.body.userId
     try {
+        existFriend(receiveId, sendId)
         await findRequest(receiveId, sendId)
 
         await addFriend(sendId, receiveId)
@@ -22,10 +23,11 @@ export async function addFriendHandler(req, res) {
 } 
 
 export async function deleteFriendHandler(req, res) {
-    const sendId = req.body.userId
-    const receiveId = req.params.userId
+    const sendId = req.body.sendId
+    const receiveId = req.body.userId
     try {
-        await deleteFriend(sendId, receiveId)
+        const friend = await findFriend(sendId, receiveId)
+        await deleteFriend(friend)
 
         return res.status(200).send({
             success: true,
@@ -40,7 +42,7 @@ export async function deleteFriendHandler(req, res) {
 }
 
 export async function getFriendListHandler(req, res) {
-    const userId = req.body.userId
+    const userId = req.body.sendId
     try {
         const friendList = await getFriendList(userId)
 

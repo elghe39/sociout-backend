@@ -1,4 +1,4 @@
-import { findUserById, createUser, changePassword, changeAvatar, changeProfile, createResetCode, sendResetCode, resetPassword, checkEmail, checkOldPassword, findUserByEmail} from '../service/user.service.js'
+import { findUserById, createUser, changePassword, changeAvatar, changeProfile, createResetCode, sendResetCode, resetPassword, checkEmail, checkOldPassword, findUserByEmail, changeCover} from '../service/user.service.js'
 
 export async function createUserHandler(req, res) {
     const { email } = req.body
@@ -150,6 +150,25 @@ export async function resetPasswordHandler(req, res) {
         return res.status(200).send({
             success: true,
             message: "Reset password successfully"
+        })
+    } catch (error) {
+        return res.status(404).send({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+export async function changeCoverHandler(req, res) {
+    const userId = req.body.userId
+    const newCover = req.body.cover
+    try {
+        const user = await findUserById(userId)
+        
+        await changeCover(user, newCover)
+        return res.status(200).send({
+            success: true,
+            message: "Change cover successfully"
         })
     } catch (error) {
         return res.status(404).send({

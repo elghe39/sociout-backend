@@ -6,6 +6,26 @@ const secret = process.env.SECRET
 
 const { Schema } = mongoose
 
+const listSchema = new Schema({
+    userId: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: 'User'
+    },
+    firstName: {
+        type: String,
+        required: true,
+    },
+    lastName: {
+        type: String,
+        required: true,
+    },
+    avatar: {
+        type: String,
+        required: true,
+    }
+}, { timestamps: true })
+
 const userSchema = new Schema({
     email: {
         type: String, 
@@ -44,22 +64,10 @@ const userSchema = new Schema({
         default: 'https://tleliteracy.com/wp-content/uploads/2017/02/default-avatar.png',
         updatedAt: Date.now()
     },
-    friendList: [{
-        type: Schema.Types.ObjectId,
-        ref: "Friend"
-    }],
-    followList: [{
-        type: Schema.Types.ObjectId,
-        ref: "Follow"
-    }],
-    followedList: [{
-        type: Schema.Types.ObjectId,
-        ref: "Follow"
-    }],
-    requestFriendList: [{
-        type: Schema.Types.ObjectId,
-        ref: "FriendRequest"
-    }],
+    friendList: [listSchema],
+    followingList: [listSchema],
+    followedList: [listSchema],
+    requestFriendList: [listSchema],
     notification: [{
         type: Schema.Types.ObjectId,
         ref: "Notification"

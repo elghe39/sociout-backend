@@ -1,8 +1,8 @@
 import { addRequest, declineRequest, deleteRequest, existRequest, getRequest } from '../service/friendRequest.service.js'
 
 export async function addRequestHandler(req, res) {
-    const sendId = req.body.userId
-    const receiveId = req.params.userId
+    const sendId = req.body.sendId
+    const receiveId = req.body.userId
     try {
         await existRequest(sendId, receiveId)
         await addRequest(sendId, receiveId)
@@ -20,8 +20,8 @@ export async function addRequestHandler(req, res) {
 }
 
 export async function deleteRequestHandler(req, res) {
-    const sendId = req.body.userId
-    const receiveId = req.params.userId
+    const sendId = req.body.sendId
+    const receiveId = req.body.userId
     try {
         await deleteRequest(sendId, receiveId)
 
@@ -38,8 +38,8 @@ export async function deleteRequestHandler(req, res) {
 }
 
 export async function declineRequestHandler(req, res) {
-    const sendId = req.body.userId
-    const receiveId = req.params.userId
+    const sendId = req.body.sendId
+    const receiveId = req.body.userId
     try {
         await declineRequest(sendId, receiveId)
 
@@ -56,7 +56,7 @@ export async function declineRequestHandler(req, res) {
 }
 
 export async function getRequestHandler(req, res) {
-    const userId = req.body.userId
+    const userId = req.body.sendId
     try {
         const requestFriendList = await getRequest(userId)
 

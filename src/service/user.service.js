@@ -133,3 +133,8 @@ export async function resetPassword(input) {
     user.hash = crypto.pbkdf2Sync(password, user.salt, 10000,  512, 'sha512').toString('hex')
     await user.save()
 }
+
+export async function changeCover(user, cover) {
+    user.cover = cover
+    await user.save()
+}
