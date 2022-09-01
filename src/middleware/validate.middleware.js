@@ -13,8 +13,8 @@ export function validation(schema) {
 }
 
 export async function validateUserId(req, res, next) {
-    const sendId = req.body.userId
-    const receiveId = req.params.userId
+    const sendId = req.body.sendId
+    const receiveId = req.body.userId
     if (sendId == receiveId) {
         res.status(404).send({
             success: false,

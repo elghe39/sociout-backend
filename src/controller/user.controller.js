@@ -19,10 +19,11 @@ export async function createUserHandler(req, res) {
 }
 
 export async function changePasswordHandler(req, res) {
-    const { userId, old_password } = req.body
+    const { sendId, oldPassword, password } = req.body
     try {
-        await checkOldPassword(userId, old_password)
-        await changePassword(req.body)
+        const user = await findUserById(sendId)
+        await checkOldPassword(user, oldPassword)
+        await changePassword(user, password)
 
         return res.status(200).send({
             success: true,
@@ -37,7 +38,7 @@ export async function changePasswordHandler(req, res) {
 }
 
 export async function getMeHandler(req, res) {
-    const userId = req.body.userId
+    const userId = req.body.sendId
     try{
         const user = await findUserById(userId)
 
@@ -160,7 +161,7 @@ export async function resetPasswordHandler(req, res) {
 }
 
 export async function changeCoverHandler(req, res) {
-    const userId = req.body.userId
+    const userId = req.body.sendId
     const newCover = req.body.cover
     try {
         const user = await findUserById(userId)

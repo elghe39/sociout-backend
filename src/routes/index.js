@@ -4,6 +4,7 @@ import auth from './auth.routes.js'
 import friendRequest from './friendRequest.routes.js'
 import friend from './friend.routes.js'
 import follow from './follow.routes.js'
+import post from './post.routes.js'
 
 const router = express.Router()
 
@@ -14,5 +15,6 @@ router.use("/api/v1", auth)
 router.use("/api/v1", friendRequest)
 router.use("/api/v1", friend)
 router.use("/api/v1", follow)
+router.use("/api/v1", post)
 
 export default router

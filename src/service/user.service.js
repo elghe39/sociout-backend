@@ -42,39 +42,35 @@ export async function createUser(input) {
     await newUser.save()
 }
 
-export async function checkOldPassword(userId, password) {
-    const user = await findUserById(userId)
-    if(!user.validatePassword(password)) {
+export async function checkOldPassword(user, oldPassword) {
+    if(!user.validatePassword(oldPassword)) {
         throw new Error('Old password is incorrect')
     }
 }
 
-export async function changePassword(input) {
-    const { userId, password } = input
-    const user = await findUserById(userId)
-
+export async function changePassword(user, password) {
     user.hash = crypto.pbkdf2Sync(password, user.salt, 10000,  512, 'sha512').toString('hex')
     await user.save()
 }
 
 export async function changeAvatar(input) {
-    const { userId, avatar } = input
-    const user = await findUserById(userId)
+    const { sendId, avatar } = input
+    const user = await findUserById(sendId)
 
     user.avatar = avatar
     await user.save()
 }
 
 export async function changeProfile(input) {
-    const { userId, firstName, lastName, gender, dayOfBirth } = input
-    await userModel.findOneAndUpdate({ userId: userId }, {
+    const { sendId, firstName, lastName, gender, dayOfBirth } = input
+    await userModel.findOneAndUpdate({ _id: sendId }, {
         firstName: firstName,
         lastName: lastName,
         gender: gender,
         dayOfBirth: dayOfBirth
     })
     
-    return findUserById(userId)
+    return findUserById(sendId)
 }
 
 export async function createResetCode(email) {

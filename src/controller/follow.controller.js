@@ -1,4 +1,4 @@
-import { addFollow, deleteFollow, existFollow, findFollow, getFollowedList, getFollowingList } from "../service/follow.service.js"
+import { addFollow, deleteFollowList, existFollow, findFollow, getFollowedList, getFollowingList } from "../service/follow.service.js"
 
 export async function addFollowHandler(req, res) {
     const sendId = req.body.sendId
@@ -25,7 +25,8 @@ export async function deleteFollowHandler(req, res) {
     try {
         const follow = await findFollow(sendId, receiveId)
 
-        await deleteFollow(follow, sendId, receiveId)
+        await deleteFollowList(sendId, receiveId)
+        await follow.delete()
 
         return res.status(200).send({
             success: true,
@@ -76,7 +77,7 @@ export async function getFollowedListHandler(req, res) {
 }
 
 export async function getFollowingListHandler(req, res) {
-    const userId = req.body.userId
+    const userId = req.params.userId
     try {
         const list = await getFollowingList(userId)
 

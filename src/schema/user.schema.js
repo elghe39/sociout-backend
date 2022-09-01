@@ -21,18 +21,6 @@ export const createUserSchema = joi.object({
         .noWhiteSpaces(),
 })
 
-export const changePasswordSchema = joi.object({
-    old_password: joiPassword.string()
-        .required(),
-    password: joiPassword.string()
-        .min(8)
-        .required()
-        .minOfLowercase(1)
-        .minOfUppercase(1)
-        .minOfNumeric(1)
-        .noWhiteSpaces()
-})
-
 export const changeAvatarSchema = joi.object({
     avatar: joi.string()
         .required()

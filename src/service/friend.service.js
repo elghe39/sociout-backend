@@ -2,8 +2,8 @@ import { findUserById } from "./user.service.js"
 import friendModel from './../model/friend.model.js'
 import { declineRequest } from "./friendRequest.service.js"
 
-export function findFriend(sendId, receiveId) {
-    const friend = friendModel.findOne({$or:[{
+export async function findFriend(sendId, receiveId) {
+    const friend = await friendModel.findOne({$or:[{
         firstUserId: sendId,
         secondUserId: receiveId
     }, {
@@ -16,8 +16,8 @@ export function findFriend(sendId, receiveId) {
     return friend
 }
 
-export function existFriend(sendId, receiveId) {
-    const friend = friendModel.findOne({$or:[{
+export async function existFriend(sendId, receiveId) {
+    const friend = await friendModel.findOne({$or:[{
         firstUserId: sendId,
         secondUserId: receiveId
     }, {
@@ -42,7 +42,7 @@ export async function addFriend(sendId, receiveId) {
     const sendUser = await findUserById(sendId)
     const receiveUser = await findUserById(receiveId)
 
-    await friend.create({
+    await friendModel.create({
         firstUserId: sendId,
         secondUserId: receiveId
     })
@@ -55,28 +55,27 @@ export async function addFriend(sendId, receiveId) {
     await receiveUser.save()
 }
 
-export async function deleteFriendList(userId, friendId) {
-    const user = await findUserById(userId)
-    
-    user.friendList.filter(({ userId }) => userId != friendId)
-    user.save()
-}
+// export async function deleteFriendList(userId, friendId) {
+//     const user = await findUserById(userId)
+//     console.log(user)
+//     user.friendList = user.friendList.filter(({ userId }) => userId != friendId)
+//     console.log(user.friendList)
+//     await user.save()
+// }
 
-export async function deleteFriend(sendId, receiveId) {
-    await deleteFriendList(friend.firstUserId, friend.secondUserId)
-    await deleteFriendList(friend.secondUserId, friend.firstUserId)
+export async function deleteFriendList(sendId, receiveId) {
+    const sendUser = await findUserById(sendId)
+    const receiveUser = await findUserById(receiveId)
 
-    friend.delete()
+    sendUser.friendList = sendUser.friendList.filter(({ userId }) => userId != receiveId)
+    receiveUser.friendList = receiveUser.friendList.filter(({ userId }) => userId != sendId)
+
+    await sendUser.save()
+    await receiveUser.save()
 }
 
 export async function getFriendList(userId) {
-    let list = []
-    
-    let friendList = await friendModel.find({ firstUserId: userId })
-    friendList.forEach(({ secondUserId }) => list.push(secondUserId))
+    const user = await findUserById(userId)
 
-    friendList = await friendModel.find({ secondUserId: userId })
-    friendList.forEach(({ firstUserId }) => list.push(firstUserId))
-
-    return list
+    return user.friendList
 }

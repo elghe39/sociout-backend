@@ -57,30 +57,18 @@ export async function addFollow(sendId, receiveId) {
     addFollowingList(sendUser, receiveUser)
     addFollowedList(sendUser, receiveUser)
 
-    await follow.save()
+    follow.save()
 }
 
-export async function deleteFollowingList(receiveId, sendId) {
-    const user = await findUserById(receiveId)
+export async function deleteFollowList(sendId, receiveId) {
+    const sendUser = await findUserById(sendId)
+    const receiveUser = await findUserById(receiveId)
 
-    user.followingList.filter(({ userId }) => userId === sendId)
+    sendUser.followedList = sendUser.followedList.filter(({ userId }) => userId != receiveId)
+    receiveUser.followingList = receiveUser.followingList.filter(({ userId }) => userId != sendId)
 
-    user.save()
-}
-
-export async function deleteFollowedList(sendId, receiveId) {
-    const user = await findUserById(sendId)
-
-    user.followedList.filter(({ userId }) => userId === receiveId)
-
-    user.save()
-}
-
-export async function deleteFollow(follow, sendId, receiveId) {
-    await deleteFollowedList(sendId, receiveId)
-    await deleteFollowingList(receiveId, sendId)
-
-    await follow.delete()
+    sendUser.save()
+    receiveUser.save()
 }
 
 export async function getFollowingList(userId) {
@@ -90,7 +78,7 @@ export async function getFollowingList(userId) {
 }
 
 export async function getFollowedList(userId) {
-    const user = await findUserById(validateUserId)
+    const user = await findUserById(userId)
 
     return user.followedList
 }

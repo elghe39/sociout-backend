@@ -49,7 +49,7 @@ export async function deleteRequest(sendId, receiveId) {
 
     request.delete()
 
-    receiveUser.requestFriendList.filter(({ userId }) => userId != sendId)
+    receiveUser.requestFriendList = receiveUser.requestFriendList.filter(({ userId }) => userId != sendId)
 
     await receiveUser.save()
 }
@@ -60,7 +60,7 @@ export async function declineRequest(sendId, receiveId) {
 
     request.delete()
 
-    sendUser.requestFriendList.filter(({ userId }) => userId != receiveId)
+    sendUser.requestFriendList = sendUser.requestFriendList.filter(({ userId }) => userId != receiveId)
 
     await sendUser.save()
 }

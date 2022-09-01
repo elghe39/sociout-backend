@@ -6,9 +6,9 @@ import { validateUserId } from '../middleware/validate.middleware.js'
 const router = express.Router()
 
 router.use(authorize)
-router.get("/friend-request", getRequestHandler)
-router.post("/friend-request", validateUserId, addRequestHandler)
-router.delete("/friend-request/delete", validateUserId, deleteRequestHandler)
-router.delete("/friend-request/decline", validateUserId, declineRequestHandler)
+router.get("/friend-requests", getRequestHandler)
+router.post("/friend-requests", validateUserId, addRequestHandler)
+router.delete("/friend-requests/delete", validateUserId, deleteRequestHandler)
+router.delete("/friend-requests/decline", validateUserId, declineRequestHandler)
 
 export default router
